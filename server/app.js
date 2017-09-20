@@ -103,7 +103,6 @@ app.post('/login', (req, res, next) => {
         return models.Users.compare(password, user.password, user.salt);
       } else {
         return false;
-        //throw user;
       }
     })
     .then(isCorrectPassword => {
