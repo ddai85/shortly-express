@@ -21,7 +21,20 @@ app.use(Auth.createSession);
 
 app.get('/', 
 (req, res) => {
-  res.render('index');
+  if (!models.Sessions.isLoggedIn(req.session)) {
+    res.redirect(401, '/login');
+  } else {
+    res.render('index');
+  }
+  // return Auth.verifySession(req, res)
+  //   .then(isLoggedIn => {
+  //     if (!isLoggedIn) {
+  //       res.redirect(401, '/login');
+  //     } else {
+  //       res.render('index');
+  //     }
+  //   })
+  //   .catch(err => console.error(err));
 });
 
 app.get('/create', 

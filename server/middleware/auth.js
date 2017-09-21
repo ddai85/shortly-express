@@ -67,3 +67,10 @@ module.exports.logoutUser = (req, res, next) => {
     console.log(err);
   });
 };
+
+module.exports.verifySession = (req, res, next) => {
+  if (!models.Sessions.isLoggedIn(req.session)) {
+    return res.redirect(401, '/login');
+  } 
+  res.render('index');
+};
