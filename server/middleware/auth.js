@@ -37,3 +37,18 @@ module.exports.createSession = (req, res, next) => {
 // Add additional authentication middleware functions below
 /************************************************************/
 
+module.exports.updateSession = (req, res, next) => {
+  const {username} = req.body;
+  return models.Users.get({username})
+    .then(user => {
+      return models.Sessions.update({userId: null, hash: req.session.hash}, {userId: user.id});
+    })
+    .then(result => {
+      console.log(result);
+    })
+    .catch(err =>{
+      console.log(err);
+    });
+
+
+};
