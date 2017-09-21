@@ -568,6 +568,18 @@ describe('', function() {
         });
       });
     });
+
+    it('sends user to login page upon logout', function(done) {
+      addUser(function(err, res, body) {
+        if (err) { return done(err); }
+
+        requestWithSession('http://127.0.0.1:4568/logout', function(error, response, resBody) {
+          if (error) { return done(error); }
+          expect(response.req.path).to.equal('/login');
+          done();
+        });
+      });
+    });
   });
 
   describe('Privileged Access:', function() {

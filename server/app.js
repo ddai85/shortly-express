@@ -28,6 +28,7 @@ app.get('/',
 
 app.get('/login', 
 (req, res) => {
+  res.status(200);
   res.render('login');
 });
 
