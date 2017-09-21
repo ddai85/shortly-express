@@ -21,36 +21,39 @@ app.use(Auth.createSession);
 
 app.get('/', 
 (req, res) => {
-  if (!models.Sessions.isLoggedIn(req.session)) {
-    res.redirect(401, '/login');
-  } else {
+  if (Auth.verifySession(req, res)) {
     res.render('index');
   }
-  // return Auth.verifySession(req, res)
-  //   .then(isLoggedIn => {
-  //     if (!isLoggedIn) {
-  //       res.redirect(401, '/login');
-  //     } else {
-  //       res.render('index');
-  //     }
-  //   })
-  //   .catch(err => console.error(err));
+});
+
+app.get('/login', 
+(req, res) => {
+  res.render('login');
+});
+
+app.get('/signup', 
+(req, res) => {
+  res.render('signup');
 });
 
 app.get('/create', 
 (req, res) => {
-  res.render('index');
+  if (Auth.verifySession(req, res)) {
+    res.render('index');
+  }
 });
 
 app.get('/links', 
 (req, res, next) => {
-  models.Links.getAll()
-    .then(links => {
-      res.status(200).send(links);
-    })
-    .error(error => {
-      res.status(500).send(error);
-    });
+  if (Auth.verifySession(req, res)) {
+    models.Links.getAll()
+      .then(links => {
+        res.status(200).send(links);
+      })
+      .error(error => {
+        res.status(500).send(error);
+      });
+  }
 });
 
 app.post('/links', 
