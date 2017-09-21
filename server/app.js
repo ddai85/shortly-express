@@ -146,6 +146,9 @@ app.post('/login', (req, res, next) => {
 
 app.get('/logout', (req, res, next) => {
   return Auth.logoutUser(req, res, next)
+    .then(() => {
+      res.redirect('/login');
+    })
     .catch(err => {
       console.log(err);
     });

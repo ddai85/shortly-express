@@ -62,7 +62,6 @@ module.exports.loginUser = (req, res, next) => {
 module.exports.logoutUser = (req, res, next) => {
 
   return models.Sessions.delete({hash: req.session.hash})
-  .then(() => next())
   .catch(err => {
     console.log(err);
   });

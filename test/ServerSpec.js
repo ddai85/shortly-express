@@ -760,6 +760,46 @@ describe('', function() {
           done();
         });
       });
+
+      it('Should update number of visits in links table', function(done) {
+        var options = {
+          'method': 'GET',
+          'uri': 'http://127.0.0.1:4568/' + link.code
+        };
+
+        db.query('SELECT visits FROM links WHERE id = 1', (error, result) => {
+          if (error) { return done(error); }
+          const beforeVisitCount = result[0].visits;
+          requestWithSession(options, function(error, res, body) {
+            if (error) { return done(error); }
+            db.query('SELECT visits FROM links WHERE id = 1', (error, result) => {
+              const afterVisitCount = result[0].visits;
+              expect(afterVisitCount).to.equal(beforeVisitCount + 1);
+              done();
+            });
+          });
+        });
+      });
+
+      it('Should add records to the clicks table when shortened URL is used', function(done) {
+        var options = {
+          'method': 'GET',
+          'uri': 'http://127.0.0.1:4568/' + link.code
+        };
+
+        db.query('SELECT COUNT(id) AS numRecords FROM clicks WHERE linkId = 1', (error, result) => {
+          if (error) { return done(error); }
+          const beforeVisitClickRecordNum = result[0].numRecords;
+          requestWithSession(options, function(error, res, body) {
+            if (error) { return done(error); }
+            db.query('SELECT COUNT(id) AS numRecords FROM clicks WHERE linkId = 1', (error, result) => {
+              const afterVisitClickRecordNum = result[0].numRecords;
+              expect(afterVisitClickRecordNum).to.equal(beforeVisitClickRecordNum + 1);
+              done();
+            });
+          });
+        });
+      });
     });
   });
 });
