@@ -41,14 +41,29 @@ module.exports.updateSession = (req, res, next) => {
   const {username} = req.body;
   return models.Users.get({username})
     .then(user => {
-      return models.Sessions.update({userId: null, hash: req.session.hash}, {userId: user.id});
-    })
-    .then(result => {
-      console.log(result);
+      return models.Sessions.update({hash: req.session.hash}, {userId: user.id});
     })
     .catch(err =>{
       console.log(err);
     });
+};
 
+module.exports.loginUser = (req, res, next) => {
+  return module.exports.updateSession(req, res, next)
+    .then(result => {
+      return true;
+    }) 
+    .catch(err =>{
+      return false;
+      console.log(err);
+    });
+};
 
+module.exports.logoutUser = (req, res, next) => {
+
+  return models.Sessions.delete({hash: req.session.hash})
+  .then(() => next())
+  .catch(err => {
+    console.log(err);
+  });
 };

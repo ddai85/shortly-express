@@ -90,7 +90,7 @@ app.post('/signup', (req, res, next) => {
       }
     })
     .then(result => {
-      Auth.updateSession(req, res, next);
+      return Auth.loginUser(req, res, next);
     })
     .then(result => {
       res.redirect('/');
@@ -112,9 +112,14 @@ app.post('/login', (req, res, next) => {
     })
     .then(isCorrectPassword => {
       if (isCorrectPassword) {
-        res.redirect('/');
+        return Auth.loginUser(req, res, next);
       } else {
         res.redirect('/login');
+      }
+    })
+    .then(isLoggedIn => {
+      if (isLoggedIn) {
+        res.redirect('/');
       }
     })
     .catch(err => {
@@ -123,6 +128,13 @@ app.post('/login', (req, res, next) => {
 
 });
 
+app.get('/logout', (req, res, next) => {
+  return Auth.logoutUser(req, res, next)
+    .catch(err => {
+      console.log(err);
+    });
+
+});
 
 /************************************************************/
 // Handle the code parameter route last - if all other routes fail
